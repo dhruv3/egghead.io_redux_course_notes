@@ -160,6 +160,7 @@ A common practice when working with Redux is to assign action types as read-only
 
 ## Register a Store Listener
 `store.subscribe()` allows you to subscribe listener functions to the store, which are called whenever an action is dispatched against the store.
+
 **Solution**
 ```javascript
 const ADD = 'ADD';
@@ -191,3 +192,117 @@ store.dispatch({type: ADD});
 console.log(count);
 ```
 
+## Combine Multiple Reducers
+Redux provides reducer composition using which you can define multiple reducers to handle different pieces of your application's state, then compose these reducers together into one root reducer. 
+
+The root reducer is then passed into the Redux `createStore()` method.
+
+We use `combineReducers()` method to combine multiple reducers together. This method accepts an object as an argument in which you define properties which associate keys to specific reducer functions.
+
+**Solution**
+```javascript
+const rootReducer = Redux.combineReducers({
+  count: counterReducer,
+  auth: authReducer
+})
+```
+## Send Action Data to the Store
+**Solution**
+```javascript
+const ADD_NOTE = 'ADD_NOTE';
+
+const notesReducer = (state = 'Initial State', action) => {
+  switch(action.type) {
+    // change code below this line
+    case "ADD_NOTE":
+      return action.text;
+    // change code above this line
+    default:
+      return state;
+  }
+};
+
+const addNoteText = (note) => {
+  // change code below this line
+  return{
+    type: 'ADD_NOTE',
+    text: note
+  }
+  // change code above this line
+};
+
+const store = Redux.createStore(notesReducer);
+
+console.log(store.getState());
+store.dispatch(addNoteText('Hello!'));
+console.log(store.getState());
+```
+
+## Use Middleware to Handle Asynchronous Actions
+Redux Thunk middleware for asynchronous handling.
+```javascript
+const store = Redux.createStore(
+  asyncDataReducer,
+  Redux.applyMiddleware(ReduxThunk.default)
+);
+```
+It's common to dispatch an action before initiating any asynchronous behavior so that your application state knows that some data is being requested (this state could display a loading icon, for instance). Then, once you receive the data, you dispatch another action which carries the data as a payload along with information that the action is completed.
+```javascript
+const handleAsync = () => {
+  return function(dispatch) {
+    // dispatch request action here
+    console.log("store");
+    store.dispatch(requestingData());
+    setTimeout(function() {
+      let data = {
+        users: ['Jeff', 'William', 'Alice']
+      }
+      // dispatch received data action here
+      store.dispatch(receivedData(data));
+    }, 2500);
+  }
+};
+```
+## Write a Counter with Redux
+**Solution**
+```javascript
+const INCREMENT = 'INCREMENT'; // define a constant for increment action types
+const DECREMENT = 'DECREMENT'; // define a constant for decrement action types
+
+const counterReducer = (state = 0, action) => {
+  switch(action.type) {
+    case INCREMENT:
+      return state + 1;
+    case DECREMENT:
+      return state - 1;
+    default:
+      return state;
+  }
+};; // define the counter reducer which will increment or decrement the state based on the action it receives
+
+const incAction = () => {
+  return {
+    type: INCREMENT
+  }
+}; // define an action creator for incrementing
+
+const decAction = () => {
+  return {
+    type: DECREMENT
+  }
+}; // define an action creator for decrementing
+
+const store = Redux.createStore(counterReducer); // define the Redux store here, passing in your reducers
+```
+## Never Mutate State
+How to deal with state and immutability:
+
+**Way 1**
+```javascript
+let newTodo = Object.assign([], state);
+newTodo.push(action.todo);
+```
+**Way 2**
+```javascript
+let newState = [...state, action.todo];
+```
