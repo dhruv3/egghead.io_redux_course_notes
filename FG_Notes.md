@@ -1,3 +1,5 @@
+# F G Notes
+
 React parent child heirarchy not always possible. You cannot have parent-child setup for every part of your application. 
 State management tough. So Redux. 
 
@@ -36,3 +38,21 @@ MIDDLEWARE
 Redux promise lib
 
 For async actions. Promise wait completion then action dispatch. 
+
+# Spapas Tutorial
+
+[Link](https://spapas.github.io/2016/03/02/react-redux-tutorial/)
+
+The general idea/flow is:
+
+* Something (let’s call it event) happens (i.e a user clicks a button, a timeout is fired, an ajax request responds)
+* An action describing that event is created by its the corresponding action creator and dispatched (i.e passed to the reducer along with the current state) through the store
+* The dispach calls the reducer with the current state object and the action as parameters
+* The reducer checks the type of the action and, depending on the action type and any other properties this action has, creates a new state object
+* The store applies the new state to all components
+
+React **context** feature that allows you to “pass data through the component tree without having to pass the props down manually at every level”.
+
+The `mapStateToProps` is a function that will be called whenever the store’s state changes and should return an object whose attributes will be passed to the connected component as properties.
+
+The `mapDispatchToProps` as we use it, once again returns an object whose attributes will be passed to the connected component and will dispatch actions when called.
